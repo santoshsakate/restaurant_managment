@@ -1,8 +1,7 @@
 <head>
 <title>Rooms</title>
 <?php
-//echo $uniqueNumber = strftime("%Y%m%d%H%M%S");
-
+ $uniqueNumber = strftime("%Y%m%d%H%M%S");
 ?>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,9 +17,23 @@
 <link rel="stylesheet" type="text/css" href="assets/styles/rooms_responsive.css">
 <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="assets/css/bootstrap-datepicker.css">
+  <script src="assets/js/bootstrap-datepicker.js"></script>
+  <style>
+      input[type=checkbox] {
+    vertical-align: middle;
+    position: relative;
+    bottom: 1px;
+}
+.bg-primary a {
+	color: #fff;	
+}
+  </style>
+  
 </head>
 <?php include('dbconnection.php');?>
 <div class="rooms">
@@ -38,22 +51,28 @@
                             <?php
                             $sql = "SELECT * from rooms";
                             $result = mysqli_query($conn, $sql);
-                           while($row = mysqli_fetch_array($result)){ ?>
+                            $i=1;
+                           while($row = mysqli_fetch_array($result)){
+                               ?>
                              <div class="col-lg-4 room_col magic_up">
 					<div class="room">
-						<div class="room_image"><img src="images/room_1.jpg" alt="https://unsplash.com/@jonathan_percy"></div>
+						<div class="room_image"><img id="room_image_<?= $i; ?>" src="images/room_1.jpg" alt="https://unsplash.com/@jonathan_percy"></div>
 						<div class="room_content text-center">
-							<div class="room_price">From 90 Rs / <span>Night</span></div>
-							<div class="room_type"><?= $row['sharing'].' Sharing'; ?></div>
-							<div class="room_title"><a href="#"><?= $row['rtype']; ?></a></div>
-							<div class="room_text">
+                                                    <div class="room_price" id="room_price_<?= $i; ?>">  <?= $row['charges']; ?> Rs / <span>Night</span></div>
+							<div class="room_type" id="room_type_<?= $i; ?>"><?= $row['sharing'].' Sharing'; ?></div>
+							<div class="room_title" id="room_title_<?= $i; ?>"><a href="#"><?= $row['rtype']; ?></a></div>
+							<div class="room_text" id="room_text_<?= $i; ?>">
 								<p><?= $row['rdetails']; ?></p>
 							</div>
-							<a href="#" data-toggle="modal" data-target="#bookRoomDiv"  class="button_container room_button"><div class="button text-center"><span>Book Now</span></div></a>
+                                                        <input type="hidden" id="room_id_<?= $i; ?>" value="<?= $row['id']; ?>">
+                                                        <input type="hidden" id="room_name_<?= $i; ?>" value="<?= $row['rname']; ?>">
+							<a href="#" data-toggle="modal" data-target="#bookRoomDiv" onclick="getDetails('<?= $i; ?>')" class="button_container room_button"><div class="button text-center"><span>Book Now</span></div></a>
 						</div>
 					</div>
 				</div>
-                           <?php }
+                           <?php $i++;
+                           
+                           }
                             ?>
 				<!-- Room_Temp-->
 				<div class="col-lg-4 room_col magic_up">
@@ -210,12 +229,12 @@
 
   <!-- Modal -->
   <div class="modal fade" id="bookRoomDiv" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
     
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-           <h5 class="modal-title" id="exampleModalLabel">Booking Form</h5>
+            <h3 class="modal-title" id="exampleModalLabel" style="float: center">Booking Form</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -223,37 +242,78 @@
         </div>
         <div class="modal-body">
          <form action="saveBooking.php" method="POST">
-          <div class="form-group">
-            <label for="first-name" class="col-form-label">First Name:</label>
-            <input type="text" class="form-control" id="first-name" name="first-name">
+            <div style="width: 30%; float:left">
+             <div class="form-group">
+                 <div class="room">
+                     <div class="room_image" ><img src="images/room_1.jpg" alt="https://unsplash.com/@jonathan_percy"></div>
+                     <div class="room_content text-center">
+                         <div class="room_price" id="modal_room_price"></div>
+                         <div class="room_type" id="modal_room_type"></div>
+                         <div class="room_title" id="modal_room_title"></div>
+                         <div class="room_text" >
+                             <p id="modal_room_text"> </p>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div >
+                 <input id="checkbox" name="packages" class="checkbox" type="checkbox" value="2000"  /><label> Boating</label>
+                <input id="checkbox"  name="packages" class="checkbox" type="checkbox" value="3000" />  <label>Jungle Safari</label>
+                 <input id="checkbox"  name="packages"  class="checkbox" type="checkbox" value="3000" /> <label>Trekking</label>
+             </div>
+          </div> 
+            <div style="width: 60%; float:right">
+ 
+             <div class="form-group col-sm-6">
+                 <div class=" input-group date"><label>Start Date</label>
+                <input type="text" class="form-control" id="start_date" name="start_date" required>
+                <i class="fa fa-calendar"></i>
+            </div>
+          </div>
+             <div class="form-group col-sm-6">
+                 <div class="input-group date"><label>End Date</label>
+                <input type="text" class="form-control" id="end_date" name="end_date" required>
+               <i class="fa fa-calendar"></i>
+            </div>
           </div>
           <div class="form-group">
+            <label for="first-name" class="col-form-label">First Name:</label>
+            <input type="text" class="form-control" id="first-name" name="first-name" required>
+          </div>
+          
+          <div class="form-group">
             <label for="last-name" class="col-form-label">Last Name:</label>
-            <input type="text" class="form-control" id="last-name" name="last-name">
+            <input type="text" class="form-control" id="last-name" name="last-name" required>
           </div>
           <div class="form-group">
             <label for="mob-no" class="col-form-label">Mob No:</label>
-            <input type="text" class="form-control" id="mob-no" name="mob-no">
+            <input type="text" class="form-control" id="mob-no" name="mob-no" required>
           </div>
              <hr>
+<!--             <div class="form-group">
+            <label for="start_date" class="col-form-label">Start Date:</label>
+            <input type="date" name="start_date" >
+          </div>-->
           <div class="form-group">
               <label for="room" class="col-form-label">Room:</label>
-              <select class="browser-default custom-select" name="room">
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
+               <input type="hidden" class="form-control" id="modal_room_id" name="room_id" readonly>
+               <input type="text" class="form-control" id="modal_room_name" name="room_name" readonly>
           </div> 
             <div class="form-group">
             <label for="price" class="col-form-label">Price:</label>
-            <input type="text" class="form-control" id="price" name="price">
+            <input type="text" class="form-control" id="price" name="price" readonly>
+            <input type="hidden" class="form-control" id="packagesNames" name="packagesNames" value="">
+            <input type="hidden" class="form-control" id="packagesPrices" name="packagesPrices" value="">
           </div>
           <div class="form-group">
             <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text" name="message"></textarea>
+            <textarea class="form-control" id="message-text" name="message" required></textarea>
           </div>
-              <button type="submit" value="Submit" class="form-control-lg">Submit</button>
+          <div class="form-group">
+            <label for="final_amount" class="col-form-label">Final Amount</label>
+            <input type="text" class="form-control" id="final_amount" name="final_amount" value="" readonly style="color:#ff0023">
+          </div>
+         <button type="submit" value="Submit" class="form-control-lg btn btn-success btn-lg col-4">Submit</button></div> 
         </form>
         </div>
         <div class="modal-footer">
@@ -265,4 +325,95 @@
   </div>
   
 </div>
+
 <!--Book_Room_DIv :: END-->
+<script>
+  
+    function getDetails(modalId){
+    $("#packages").val("");
+    $("#packagesPrices").val("");
+    //deselect checkboxes
+    deselectall();
+    var room_price = $("#room_price_"+modalId).text();
+    var room_price_array =room_price.split("Rs");
+    var room_type = $("#room_type_"+modalId).text();
+    var room_title = $("#room_title_"+modalId).text();
+    var room_text = $("#room_text_"+modalId).text();
+    var room_id = $("#room_id_"+modalId).val();
+    var room_name = $("#room_name_"+modalId).val();
+    
+    $("#modal_room_price").text(room_price);
+    $("#modal_room_type").text(room_type);
+    $("#modal_room_title").text(room_title);
+    $("#modal_room_text").text(room_text);
+    $("#modal_room_name").val(room_name);
+    $("#modal_room_id").val(room_id);
+    $("#price").val(room_price_array[0]);
+    $("#final_amount").val(room_price_array[0]);
+  
+    }
+    
+    $(document).ready(function () {
+        
+         
+        
+    var ckbox = $('#checkbox');
+    
+    $('input').on('click',function () {
+    packageArrNames =[];
+    packageArrPrices = [];
+     var Final_amount = 0
+     var room_price = $("#price").val();
+   
+     $('input:checkbox[name=packages]').each(function() 
+     {    
+        if($(this).is(':checked')) {
+              //alert($(this).val());
+              Final_amount = parseInt(Final_amount)+parseInt($(this).val())
+              //alert($(this).next('label').text());
+              packageArrNames.push($(this).next('label').text());
+              packageArrPrices.push($(this).val());
+          }else{
+             $("#final_amount").val(Final_amount);  
+          }
+           
+        });
+   Final_amount = parseInt(Final_amount)+parseInt(room_price);
+    $("#final_amount").val(Final_amount);
+    $("#packagesNames").val(packageArrNames);
+    $("#packagesPrices").val(packageArrPrices);
+    });
+    
+    
+});
+
+    $('#start_date').datepicker({
+            dateFormat: "dd-M-yy",
+            minDate: 0,
+            onSelect: function (date) {
+                var date2 = $('#dt1').datepicker('getDate');
+                date2.setDate(date2.getDate() + 1);
+                $('#dt2').datepicker('setDate', date2);
+                //sets minDate to dt1 date + 1
+                $('#dt2').datepicker('option', 'minDate', date2);
+            }
+        });
+        $('#end_date').datepicker({
+            dateFormat: "dd-M-yy",
+            onClose: function () {
+                var dt1 = $('#dt1').datepicker('getDate');
+                console.log(dt1);
+                var dt2 = $('#dt2').datepicker('getDate');
+                if (dt2 <= dt1) {
+                    var minDate = $('#dt2').datepicker('option', 'minDate');
+                    $('#dt2').datepicker('setDate', minDate);
+                }
+            }
+        });
+        
+function deselectall() {
+   $('.checkbox').each(function () { //loop through each checkbox
+                $(this).prop('checked', false); //check 
+            });
+    }
+</script>
