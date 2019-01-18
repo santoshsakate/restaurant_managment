@@ -22,9 +22,7 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   
   <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="assets/css/bootstrap-datepicker.css">
-  <script src="assets/js/bootstrap-datepicker.js"></script>
+  
   
   <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -277,15 +275,17 @@
  
              <div class="form-group col-sm-6">
                  <div class=" input-group date"><label>Start Date</label>
-                <input type="text" class="form-control" id="start_date" name="start_date" required>
-                <i class="fa fa-calendar"></i>
+                <input type="date" class="form-control" id="start_date" value="<?php echo date('Y-m-d'); ?>" onchange="calDays()"/>
             </div>
           </div>
              <div class="form-group col-sm-6">
                  <div class="input-group date"><label>End Date</label>
-                <input type="text" class="form-control" id="end_date" name="end_date" required>
-               <i class="fa fa-calendar"></i>
+                    <input type="date" id="end_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" onchange="calDays()" />
             </div>
+          </div>
+		   <div class="form-group">
+            <label for="no_of_days" class="col-form-label">No Of Days:</label>
+            <input type="text" id="no_of_days" value="1" readonly style="color:blue"/>
           </div>
           <div class="form-group">
             <label for="first-name" class="col-form-label">First Name:</label>
@@ -352,7 +352,10 @@
     var room_text = $("#room_text_"+modalId).text();
     var room_id = $("#room_id_"+modalId).val();
     var room_name = $("#room_name_"+modalId).val();
+   var no_of_days = $("#no_of_days").val();
+   
     
+    var final_amount = parseInt(room_price_array[0])*parseInt(no_of_days);
     $("#modal_room_price").text(room_price);
     $("#modal_room_type").text(room_type);
     $("#modal_room_title").text(room_title);
@@ -360,7 +363,7 @@
     $("#modal_room_name").val(room_name);
     $("#modal_room_id").val(room_id);
     $("#price").val(room_price_array[0]);
-    $("#final_amount").val(room_price_array[0]);
+    $("#final_amount").val(final_amount);
   
     }
     
@@ -375,6 +378,7 @@
     packageArrPrices = [];
      var Final_amount = 0
      var room_price = $("#price").val();
+
    
      $('input:checkbox[name=packages]').each(function() 
      {    
@@ -388,8 +392,10 @@
              $("#final_amount").val(Final_amount);  
           }
            
-        });
+        }); 
+		
    Final_amount = parseInt(Final_amount)+parseInt(room_price);
+   
     $("#final_amount").val(Final_amount);
     $("#packagesNames").val(packageArrNames);
     $("#packagesPrices").val(packageArrPrices);
@@ -398,33 +404,31 @@
     
 });
 
-    $('#start_date').datepicker({
-            dateFormat: "dd-M-yy",
-            minDate: 0,
-            onSelect: function (date) {
-                var date2 = $('#dt1').datepicker('getDate');
-                date2.setDate(date2.getDate() + 1);
-                $('#dt2').datepicker('setDate', date2);
-                //sets minDate to dt1 date + 1
-                $('#dt2').datepicker('option', 'minDate', date2);
-            }
-        });
-        $('#end_date').datepicker({
-            dateFormat: "dd-M-yy",
-            onClose: function () {
-                var dt1 = $('#dt1').datepicker('getDate');
-                console.log(dt1);
-                var dt2 = $('#dt2').datepicker('getDate');
-                if (dt2 <= dt1) {
-                    var minDate = $('#dt2').datepicker('option', 'minDate');
-                    $('#dt2').datepicker('setDate', minDate);
-                }
-            }
-        });
+   
         
 function deselectall() {
    $('.checkbox').each(function () { //loop through each checkbox
                 $(this).prop('checked', false); //check 
             });
     }
+</script>
+<script>
+function calDays() { 
+  var start = $('#start_date').val();
+  var end = $('#end_date').val();
+
+   var startDay = new Date(start);
+     var endDay = new Date(end);
+     var millisecondsPerDay = 1000 * 60 * 60 * 24;
+
+     var millisBetween = endDay.getTime() - startDay.getTime();
+     var days = millisBetween / millisecondsPerDay;
+     var noofdays = Math.floor(days)+1;
+      // Round down.
+       //alert( Math.floor(days)+1);
+	   $('#no_of_days').val(noofdays);
+	   Final_amount = $("#final_amount").val(); 
+     var Final_amount = parseInt(Final_amount)*parseInt(noofdays);
+ $("#final_amount").val(Final_amount); 
+	   }
 </script>
