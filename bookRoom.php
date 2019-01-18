@@ -379,6 +379,9 @@
      var Final_amount = 0
      var room_price = $("#price").val();
 
+     //var amount = $("#final_amount").val();
+ var no_of_days = $("#no_of_days").val();
+     var amount = parseInt(room_price)*parseInt(no_of_days);
    
      $('input:checkbox[name=packages]').each(function() 
      {    
@@ -393,8 +396,8 @@
           }
            
         }); 
-		
-   Final_amount = parseInt(Final_amount)+parseInt(room_price);
+		 	
+   Final_amount = parseInt(Final_amount)+parseInt(amount);
    
     $("#final_amount").val(Final_amount);
     $("#packagesNames").val(packageArrNames);
