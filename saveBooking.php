@@ -13,6 +13,7 @@ $created_date=date('Y-m-d H:i:s');
 $start_date=date('Y-m-d',strtotime($_POST['start_date']));
 $end_date=date('Y-m-d',strtotime($_POST['end_date']));
 $uniqueNumber = strftime("%Y%m%d%H%M%S");
+$no_of_days= $_POST['no_of_days'];
 
 $packagesNames= $_POST['packagesNames'];
 $packagesPrices= $_POST['packagesPrices'];
@@ -20,9 +21,9 @@ $final_amount= $_POST['final_amount'];
 
 $sql="INSERT INTO bookings(first_name,last_name,"
         . "mob_no,room_id,price,message,start_date,"
-        . "end_date,package_names,package_prices,final_amount,status) "
+        . "end_date,no_of_days,package_names,package_prices,final_amount,status) "
         . "VALUES ('$first_name','$last_name','$mob','$room','$price',"
-        . "'$message','$start_date','$end_date','$packagesNames','$packagesPrices','$final_amount','1')";
+        . "'$message','$start_date','$end_date','$no_of_days','$packagesNames','$packagesPrices','$final_amount','1')";
 
   
    if (mysqli_query($conn, $sql)) {

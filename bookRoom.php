@@ -285,7 +285,7 @@
           </div>
 		   <div class="form-group">
             <label for="no_of_days" class="col-form-label">No Of Days:</label>
-            <input type="text" id="no_of_days" value="1" readonly style="color:blue"/>
+            <input type="text" id="no_of_days" name="no_of_days" value="1" readonly style="color:blue"/>
           </div>
           <div class="form-group">
             <label for="first-name" class="col-form-label">First Name:</label>
