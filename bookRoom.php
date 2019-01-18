@@ -275,12 +275,12 @@
  
              <div class="form-group col-sm-6">
                  <div class=" input-group date"><label>Start Date</label>
-                <input type="date" class="form-control" id="start_date" value="<?php echo date('Y-m-d'); ?>" onchange="calDays()"/>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="<?php echo date('Y-m-d'); ?>" onchange="calDays()"/>
             </div>
           </div>
              <div class="form-group col-sm-6">
                  <div class="input-group date"><label>End Date</label>
-                    <input type="date" id="end_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" onchange="calDays()" />
+                    <input type="date" id="end_date"  name="end_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" onchange="calDays()" />
             </div>
           </div>
 		   <div class="form-group">
